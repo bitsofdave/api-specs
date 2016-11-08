@@ -1512,7 +1512,7 @@ paths:
   /reports/{id}:
     get:
       summary: Show Report
-      description: You will receive a list of fields included in the report you created in Namely. To export the fields in the CSV file, please use the endpoint - https://[company].namely.com/reports/[report_id]/results.csv.
+      description: You will receive a list of fields included in the report you created in Namely. # To export the fields in the CSV file, please use the endpoint - https://[company].namely.com/reports/[report_id]/results.csv.
       parameters:
         - name: id
           in: path
