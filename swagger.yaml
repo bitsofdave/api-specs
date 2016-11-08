@@ -13,11 +13,23 @@ paths:
       summary: Profiles Index
       description: |
         This method returns an array of `profiles`, whose format and content will be the same as the show profile endpoint.
-        This endpoint uses pagination through two optional parameters. The first, limit, defaults to 30 and accepts EITHER an integer value, OR the string 'all' to return all records. The second, after, should be the id of the first record BEFORE the records that you want to retrieve.
+        This endpoint uses pagination through two optional parameters. The first, limit, defaults to 30 and accepts an integer value to return records. The second, after, should be the id of the first record BEFORE the records that you want to retrieve.
       parameters:
         - name: per_page
           in: query
           description: Integer limit of records retrieved.
+          type: integer
+        - name: sort
+          in: query
+          description: An attribute to sort by fields on profiles. Allowed attributes are first_name, last_name, and job_title. Prepend with a - (minus) sign to reverse the order.
+          type: string
+        - name: filter
+          in: query
+          description: A hash containing a filter you'd like to apply before profiles are returned.
+          type: object
+        - name: page
+          in: query
+          description: The page of information you'd like to receive.
           type: integer
       responses:
         200:
