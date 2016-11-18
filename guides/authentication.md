@@ -49,3 +49,13 @@ OAuth authentication
 When implementing OAuth 2 authentication with Namely, we recommend always sending the user to the `api/v1/oauth2/authorize` endpoint. Documentation on this: https://developers.namely.com/1.0/getting-started/authentication
 
 
+SAML mobile authentication
+--------------------------
+Implementing SAML authentication on mobile is fairly straightforward. 
+
+1. Redirect the user in a webview to `/api/v1/oauth2/authorize` with the `client_id`, `redirect_uri` and `response_type=code`.
+2. User will see a login page (in the future we might redirect the user to the SAML provider without showing this page).
+3. User clicks the Login with SAML button then gets redirected to the SAML provider's system.
+4. User returns from the provider and Namely redirect the user to the application's `redirect_uri`.
+
+
