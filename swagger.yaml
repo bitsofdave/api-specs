@@ -8,6 +8,43 @@ schemes:
   - https
 basePath: /api/v1
 paths:
+  /pay_groups:
+    get:
+      summary: Pay Group Index
+      description: |
+        This method returns an array of `pay_groups`.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              pay_groups:
+                type: array
+                items:
+                  $ref: "#/definitions/Pay Group"
+              meta:
+                type: object
+                properties:
+                  payroll_companies:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Payroll Companies"
+              links:
+                type: object
+                properties:
+                  pay_groups.payroll_companies:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+              linked:
+                type: object
+                properties:
+                  payroll_companies:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Payroll Companies"
   /profiles:
     get:
       summary: Profiles Index
@@ -2415,6 +2452,32 @@ definitions:
       zip:
         type: string
       phone:
+        type: string
+  Pay Group:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      pay_period_name:
+        type: string
+      pay_period_per_year:
+        type: integer
+      payroll_company_id:
+        type: string
+      read_only:
+        type: boolean
+  Payroll Company:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      ein:
+        type: string
+      external_id:
         type: string
   Profile:
     type: object
