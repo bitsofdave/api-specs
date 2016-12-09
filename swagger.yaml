@@ -1161,7 +1161,7 @@ paths:
                   payroll_companies:
                     type: array
                     items:
-                      $ref: "#/definitions/Payroll Companies"
+                      $ref: "#/definitions/Payroll Company"
               links:
                 type: object
                 properties:
@@ -1176,7 +1176,7 @@ paths:
                   payroll_companies:
                     type: array
                     items:
-                      $ref: "#/definitions/Payroll Companies"
+                      $ref: "#/definitions/Payroll Company"
   /profiles:
     get:
       summary: Profiles Index
@@ -2662,16 +2662,20 @@ definitions:
   Salary:
     type: object
     properties:
-      yearly_amount:
-        type: integer
       currency_type:
         type: string
       date:
         type: string
-      rate:
-        type: string
       guid:
         type: string
+      pay_group_id:
+        type: integer
+      payroll_job_id:
+        type: string
+      rate:
+        type: string
+      yearly_amount:
+        type: integer
   Section:
     type: object
     properties:
