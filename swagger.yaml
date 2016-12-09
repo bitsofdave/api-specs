@@ -8,495 +8,66 @@ schemes:
   - https
 basePath: /api/v1
 paths:
-  /pay_groups:
+  /companies/info:
     get:
-      summary: Pay Group Index
-      description: |
-        This method returns an array of `pay_groups`.
+      summary: Company Info
+      description: Get company related information (authentication methods, name and background image).
       responses:
         200:
           description: "Successful Response"
           schema:
             type: object
             properties:
-              pay_groups:
+              name:
+                type: string
+                description: Compay name
+              permalink:
+                type: string
+                description: Company permalink, the subdomain before namely.com
+              background_url:
+                type: string
+                description: Background image on the login page.
+              logo_url:
+                type: string
+                description: Logo image on the home page.
+              authentications:
                 type: array
                 items:
-                  $ref: "#/definitions/Pay Group"
-              meta:
-                type: object
-                properties:
-                  payroll_companies:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Payroll Companies"
-              links:
-                type: object
-                properties:
-                  pay_groups.payroll_companies:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-              linked:
-                type: object
-                properties:
-                  payroll_companies:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Payroll Companies"
-  /profiles:
-    get:
-      summary: Profiles Index
-      description: |
-        This method returns an array of `profiles`, whose format and content will be the same as the show profile endpoint.
-        This endpoint uses pagination through two optional parameters. The first, limit, defaults to 30 and accepts an integer value to return records. The second, after, should be the id of the first record BEFORE the records that you want to retrieve.
-      parameters:
-        - name: per_page
-          in: query
-          description: Integer limit of records retrieved.
-          type: integer
-        - name: sort
-          in: query
-          description: An attribute to sort by fields on profiles. Allowed attributes are first_name, last_name, and job_title. Prepend with a - (minus) sign to reverse the order.
-          type: string
-        - name: filter
-          in: query
-          description: A hash containing a filter you'd like to apply before profiles are returned.
-          type: object
-        - name: page
-          in: query
-          description: The page of information you'd like to receive.
-          type: integer
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              profiles:
-                type: array
-                items:
-                  $ref: "#/definitions/Profile"
-              meta:
-                $ref: "#/definitions/Profile Meta"
-              links:
-                $ref: "#/definitions/Profile Links"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-                  files:
-                    type: array
-                    items:
-                      $ref: "#/definitions/File"
-                  groups:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Group"
-                  teams:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Team"
-      tags:
-        - Profiles
-    post:
-      summary: Create Profile
-      description: The fields that you can set and will receive are a combination of Namely's defaults fields and custom fields that exist only for your company.
-      parameters:
-      - name: body
-        in: body
-        required: true
-        description: JSON payload for the post request.
-        schema:
-          $ref: "#/definitions/Create Profile"
-      responses:
-        201:
-          description: "Created Response"
-          schema:
-            type: object
-            properties:
-              profiles:
-                type: array
-                items:
-                  $ref: "#/definitions/Profile"
-              meta:
-                $ref: "#/definitions/Profile Meta"
-              links:
-                $ref: "#/definitions/Profile Links"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-                  files:
-                    type: array
-                    items:
-                      $ref: "#/definitions/File"
-                  groups:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Group"
-                  teams:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Team"
-      tags:
-        - Profiles
-  /profiles/{id}:
-    get:
-      summary: Show Profiles
-      description: |
-        This method allows users to retrieve a `profile`.
-        The profile entry will contain additional information from all fields that your company has (default and custom) that are currently supported by the API and that the current user has access to for the given user. You can get a full list of accessible fields, as well as information on formatting them from the fields API endpoint.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: id of the profile you wish to retrieve.
-          type: string
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              profiles:
-                type: array
-                items:
-                  $ref: "#/definitions/Profile"
-              meta:
-                $ref: "#/definitions/Profile Meta"
-              links:
-                $ref: "#/definitions/Profile Links"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-                  files:
-                    type: array
-                    items:
-                      $ref: "#/definitions/File"
-                  groups:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Group"
-                  teams:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Team"
-      tags:
-        - Profiles
-    put:
-      summary: Update Profile
-      description: |
-        The update action is similar to the create action in what is modifiable and how it should be set. You need only pass the attributes that you would like to modify. Any others will remain as they are.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-        - name: body
-          in: body
-          required: true
-          description: JSON payload to update a profile.
-          schema:
-            $ref: "#/definitions/Update Profile"
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              profiles:
-                type: array
-                items:
-                  $ref: "#/definitions/Profile"
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  status:
-                    type: integer
-              links:
-                type: object
-                items:
-                  $ref: "#/definitions/Profile Links"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-                  files:
-                    type: array
-                    items:
-                      $ref: "#/definitions/File"
-                  groups:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Group"
-                  teams:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Team"
-      tags:
-      - Profiles
-  /profiles/me:
-    get:
-      summary: Current User
-      description: |
-        The response will contain information about the user who owns the access token used to access the API.
-        If the access token belongs to a full Profile, the response content and format will be Identical as if you did a show request for that profile.
-        However, if you are accessing via a dedicated API user, the response will be much shorter. The most important element in such a response would be EMAIL. FIRST_NAME and LAST_NAME will both be "Admin".
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              profiles:
-                type: array
-                items:
-                  $ref: "#/definitions/Profile"
-              meta:
-                $ref: "#/definitions/Profile Meta"
-              links:
-                $ref: "#/definitions/Profile Links"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-                  files:
-                    type: array
-                    items:
-                      $ref: "#/definitions/File"
-                  groups:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Group"
-                  teams:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Team"
-      tags:
-        - Profiles
-  /profiles/fields:
-    get:
-      summary: Profile Fields Index
-      description: |
-        Returns all currently supported Fields, default and custom.
-        NAME is the internal name of the field, which is also the key that should be used in the profile API endpoints. This may be distinct from LABEL, which is what will appear in the web interface.
-        The valid format info is an attempt to explain what the proper format and possible values are for that field.
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              fields:
-                type: array
-                items:
-                  $ref: "#/definitions/Field"
-              meta:
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  fields.sections:
-                    type: string
-              linked:
-                type: object
-                properties:
-                  sections:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Section"
-      tags:
-        - Profile Fields
-    post:
-      summary: Create Profile Field
-      description: |
-        Allows you to create a profile field within a section.
-      parameters:
-      - name: body
-        in: body
-        required: true
-        description: JSON payload for the post request.
-        schema:
-          $ref: "#/definitions/Create Profile Field"
-      responses:
-        201:
-          description: "Created Response"
-          schema:
-            type: object
-            properties:
-              fields:
-                type: array
-                items:
-                  $ref: "#/definitions/Field"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  fields.sections:
-                    type: string
-              linked:
-                type: object
-                properties:
-                  sections:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Section"
-      tags:
-        - Profile Fields
-  /profiles/fields/{id}:
-    put:
-      summary: Update Profile Field
-      description: |
-        Returns all currently supported Fields, default and custom.
-        NAME is the internal name of the field, which is also the key that should be used in the profile API endpoints. This may be distinct from LABEL, which is what will appear in the web interface.
-        The valid format info is an attempt to explain what the proper format and possible values are for that field.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: id of the field name you wish to change.
-          type: string
-        - name: body
-          in: body
-          required: true
-          description: JSON payload for the post request.
-          schema:
-            $ref: "#/definitions/Update Profile Field"
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              fields:
-                type: array
-                items:
-                  $ref: "#/definitions/Field"
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  status:
-                    type: integer
-              links:
-                type: object
-                properties:
-                  fields.sections:
-                    type: string
-              linked:
-                type: object
-                properties:
-                  sections:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Section"
-      tags:
-        - Profile Fields
-  /profiles/fields/sections:
-    get:
-      summary: Sections Index
-      description: |
-        Returns all currently supported Sections, default and custom.
-        NAME is the internal name of the field, which is also the key that should be used in the profile API endpoints. This may be distinct from LABEL, which is what will appear in the web interface.
-        The valid format info is an attempt to explain what the proper format and possible values are for that field.
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              sections:
-                type: array
-                items:
-                  $ref: '#/definitions/Section'
-              meta:
-                type: object
-                $ref: '#/definitions/Meta'
-              links:
-                type: object
-                properties:
-                  sections.fields:
+                  type: object
+                  properties:
+                    type:
                       type: string
-              linked:
-                type: object
-                properties:
-                  fields:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Field"
-      tags:
-        - Profile Fields Sections
-    post:
-      summary: Create Section
-      description: |
-        Allows you to create a section that will include several profile fields. For example, a "General" section can include profile fields for "First Name", "Last Name", "Titles", etc.
-      parameters:
-        - name: body
-          in: body
-          required: true
-          description: JSON payload for creating a new section.
-          schema:
-            $ref: "#/definitions/Create Section"
-      responses:
-        201:
-          description: "Created Response"
-          schema:
-            type: object
-            properties:
-              sections:
-                type: array
-                items:
-                  $ref: '#/definitions/Section'
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  sections.fields:
-                    type: string
-              linked:
-                type: object
-                properties:
-                  fields:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Field"
-      tags:
-        - Profile Fields Sections
-  /profiles/fields/sections/{id}:
+                      enum:
+                        - email_password
+                        - google_oauth2
+                        - saml
+                    init_url:
+                      type: string
+                      required: false
+  /countries:
     get:
-      summary: Show Section
-      description: |
-        This method allows users to retrieve a section.
-        The results will contain additional information from all fields that your company has (default and custom) in that particular section that are currently supported by the API and that the current user has access to for the given user. You can get a full list of accessible fields, as well as information on formatting them from the fields API endpoint.
+      summary: Countries Index
+      description: Returns all valid countries in Namely. Countries are universal and may not be modified. id is the value that should be passed when setting address values. Each entry contains the proper naming for it's subdivision (e.g. 'State' or 'Province'). In order to get a list of a state's subdivisions, access the country's show endpoint.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              countries:
+                type: array
+                items:
+                  $ref: "#/definitions/Country"
+      tags:
+        - Countries
+  /countries/{id}:
+    get:
+      summary: Show Country
+      description: Returns all valid countries in Namely. A country is universal and may not be modified. id is the value that should be passed when setting address values. Each entry contains the proper naming for it's subdivision (e.g. 'State' or 'Province'). In order to get a list of a state's subdivisions, access the country's show endpoint.
       parameters:
         - name: id
           in: path
-          description: Section id
+          description: id of desired country (an abbreviation of the country's name).
           required: true
           type: string
       responses:
@@ -505,74 +76,19 @@ paths:
           schema:
             type: object
             properties:
-              hello:
-                type: string
-              sections:
+              countries:
                 type: array
                 items:
-                  $ref: '#/definitions/Section'
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
+                  $ref: "#/definitions/Country"
               links:
                 type: object
                 properties:
-                  sections.fields:
-                    type: string
-              linked:
-                type: object
-                properties:
-                  fields:
+                  subdivision:
                     type: array
                     items:
-                      $ref: "#/definitions/Field"
+                      $ref: "#/definitions/Subdivision"
       tags:
-        - Profile Fields Sections
-    put:
-      summary: Update Section
-      description: |
-        The update action is similar to the create action in what is modifiable and how it should be set. You need only pass the attribute (name of section) that you would like to modify. Any others will remain as they are.
-      parameters:
-        - name: id
-          in: path
-          description: Section id
-          required: true
-          type: string
-        - name: body
-          in: body
-          required: true
-          description: JSON payload for updating a section.
-          schema:
-            $ref: "#/definitions/Update Section"
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              hello:
-                type: string
-              sections:
-                type: array
-                items:
-                  $ref: '#/definitions/Section'
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  sections.fields:
-                    type: string
-              linked:
-                type: object
-                properties:
-                  fields:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Field"
-      tags:
-        - Profile Fields Sections
+        - Countries
   /events:
     get:
       summary: Events Index
@@ -861,30 +377,54 @@ paths:
           description: "Succssful Response"
       tags:
         - Comments
-  /countries:
+  # /file:
+  #   post:
+  #     summary: Create File
+  #     description: |
+  #       In order to set a file attribute in another API endpoint (such as a profile file or image field, or adding a file to an event), it is first necessary to upload the file in a separate request.
+  #       The format for this post request is different from other endpoints of the API. While other endpoints require a json formatted post request, uploading a file should be in a multipart/form-data format.
+  #       Once you have successfully completed this upload, the response will give you the id of the newly uploaded file, to set for profile attributes or events.
+  #       As a security feature the download links to files will expire after 10 minutes. Every file download link will include a one-time token.
+  #       In the case of an image file, the response will show available thumbs, as shown above.
+  #     parameters:
+  #       - name: file
+  #         in: query
+  #         description: File Object
+  #         required: true
+  #         type: string
+  #     responses:
+  #       200:
+  #         description: "Successful Response"
+  #         schema:
+  #           type: array
+  #           items:
+  #             $ref: "#/definitions/File"
+  #   get:
+  #     summary: Download File
+  #     description: Obtain the "file_url" from GET show resource endpoint and pass as parameter.
+  #     parameters:
+  #       - name: file
+  #         in: query
+  #         description: id given by file_url in 'Show Resource GET Endpoint'.
+  #         required: true
+  #         type: string
+  #     responses:
+  #       200:
+  #         description: "Successful Response"
+  #         schema:
+  #           type: array
+  #           items:
+  #             $ref: "#/definitions/File"
+  #     tags:
+  #       - File
+  /folder/{id}/resources:
     get:
-      summary: Countries Index
-      description: Returns all valid countries in Namely. Countries are universal and may not be modified. id is the value that should be passed when setting address values. Each entry contains the proper naming for it's subdivision (e.g. 'State' or 'Province'). In order to get a list of a state's subdivisions, access the country's show endpoint.
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              countries:
-                type: array
-                items:
-                  $ref: "#/definitions/Country"
-      tags:
-        - Countries
-  /countries/{id}:
-    get:
-      summary: Show Country
-      description: Returns all valid countries in Namely. A country is universal and may not be modified. id is the value that should be passed when setting address values. Each entry contains the proper naming for it's subdivision (e.g. 'State' or 'Province'). In order to get a list of a state's subdivisions, access the country's show endpoint.
+      summary: Resources Index
+      description: This method returns an array of resources, whose format and content will be the same as the show resource endpoint.
       parameters:
         - name: id
           in: path
-          description: id of desired country (an abbreviation of the country's name).
+          description:  Use the folder id to pull the resources you want to see.
           required: true
           type: string
       responses:
@@ -893,322 +433,113 @@ paths:
           schema:
             type: object
             properties:
-              countries:
+              resources:
                 type: array
                 items:
-                  $ref: "#/definitions/Country"
-              links:
-                type: object
-                properties:
-                  subdivision:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Subdivision"
-      tags:
-        - Countries
-  /job_titles:
-    get:
-      summary: Job Titles Index
-      description: This endpoint returns all job titles, in the same format as in the show endpoint. Each job title has one linked job tier, and each job tier can have many job titles.
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              job_titles:
-                type: array
-                items:
-                  $ref: "#/definitions/Job Title"
+                  $ref: "#/definitions/Resource"
               meta:
                 type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
                 properties:
-                  job_titles.job_tier:
-                    type: object
-                    items:
-                      $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_tiers:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Tier"
-      tags:
-        - Job Title
+                  is_super_admin:
+                    type: boolean
+                  accepted_file_extensions:
+                    type: string
     post:
-      summary: Create Job Title
-      description: To get a list of available job tiers, use the job tiers index endpoint.
-      parameters:
-        - name: body
-          in: body
-          required: true
-          description: Endpoint to create a job title.
-          schema:
-            $ref: "#/definitions/Create Job Title"
-      responses:
-        201:
-          description: "Create Response"
-          schema:
-            type: object
-            properties:
-              job_titles:
-                type: array
-                items:
-                  $ref: "#/definitions/Job Title"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  job_titles.job_tier:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_tiers:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Tier"
-      tags:
-        - Job Title
-  /job_titles/{id}:
-    get:
-      summary: Show Job Title
-      description: This endpoint returns information about one job title. Each job title has one job tier, which is included in the "linked" section. For more information about how "links" and "linked" work, please consult the JSON API section of the documentation.
+      summary: Create Resource
+      description: To create a resource, you will need to either upload a file or provide a link.
       parameters:
         - name: id
           in: path
-          description: id of Job Title.
           required: true
+          description: ID of the folder.
           type: string
+        - name: body
+          in: body
+          required: true
+          description: JSON payload for creating a new resource.
+          schema:
+            $ref: "#/definitions/Create Resource"
       responses:
         200:
           description: "Successful Response"
           schema:
             type: object
             properties:
-              job_titles:
+              resources:
                 type: array
                 items:
-                  $ref: "#/definitions/Job Title"
+                  $ref: "#/definitions/Resource"
               meta:
                 type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
                 properties:
-                  job_titles.job_tier:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_tiers:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Tier"
-      tags:
-        - Job Title
+                  is_super_admin:
+                    type: boolean
+                  accepted_file_extensions:
+                    type: string
+    delete:
+      summary: Delete Resource
+      description: This endpoint deletes a specified resource.
+      parameters:
+        - name: id
+          in: path
+          description: The resource's id.
+          required: true
+          type: string
+      responses:
+        200:
+          description: "Successful Response"
+  /folders:
+    get:
+      summary: Show Folders
+      description: This endpoint returns a list of folders and their information.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              resources:
+                type: array
+                items:
+                  $ref: "#/definitions/Folder"
+  /folders/{id}:
     put:
-      summary: Update Job Title
-      description: Allows you to modify an existing job title. To get a list of available job tiers, use the job tiers index endpoint.
+      summary: Update Folder
+      description: You must know the id of the folder to update it.
       parameters:
         - name: id
           in: path
-          description: The ID of the job title you wish to change.
-          required: true
-          type: string
-        - name: body
-          in: body
-          description: JSON payload to update a job title.
-          required: true
-          schema:
-            $ref: "#/definitions/Update Job Title"
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              job_titles:
-                type: array
-                items:
-                  $ref: "#/definitions/Job Title"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  job_titles.job_tier:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_tiers:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Tier"
-      tags:
-        - Job Title
-  /job_tiers:
-    get:
-      summary: Job Tiers Index
-      description: This method returns an array of all job tiers, whose format and content will be the same as the show profile endpoint.
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              job_tiers:
-                type: array
-                items:
-                  $ref: "#/definitions/Job Tier"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  job_tiers.job_titles:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title Link"
-      tags:
-        - Job Tier
-    post:
-      summary: Create Job Tier
-      description: Create a job tier. It's only parameter is title, which is required.
-      parameters:
-        - name: body
-          in: body
-          required: true
-          description: Endpoint to create a job tier.
-          schema:
-            $ref: "#/definitions/Create Job Tier"
-      responses:
-        201:
-          description: "Create Response"
-          schema:
-            type: object
-            properties:
-              job_tiers:
-                type: array
-                items:
-                  $ref: "#/definitions/Job Tier"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  job_tiers.job_titles:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-      tags:
-        - Job Tier
-  /job_tiers/{id}:
-    get:
-      summary: Show Job Tier
-      description: The linked objects will contain information on all of the job titles assosciated with the job tier. For more information on how "links" and "linked" work, please consult the JSON API section of the documentation.
-      parameters:
-        - name: id
-          in: path
-          description: id of the Job Tier.
-          required: true
-          type: string
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              job_tiers:
-                type: array
-                items:
-                  $ref: "#/definitions/Job Tier"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  job_tiers.job_titles:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-      tags:
-        - Job Tier
-    put:
-      summary: Update Job Tier
-      description: Updates a Job Tier.
-      parameters:
-        - name: id
-          in: path
-          description: id of the Job Tier to update.
+          description: The folder's id.
           required: true
           type: string
         - name: body
           in: body
           required: true
-          description: Endpoint to update a job tier.
+          description: JSON payload for updating an existing folder.
           schema:
-            $ref: "#/definitions/Update Job Tier"
+            $ref: "#/definitions/Update Folder"
       responses:
         200:
           description: "Successful Response"
           schema:
             type: object
             properties:
-              job_tiers:
+              resources:
                 type: array
                 items:
-                  $ref: "#/definitions/Job Tier"
-              meta:
-                type: object
-                $ref: "#/definitions/Meta"
-              links:
-                type: object
-                properties:
-                  job_tiers.job_titles:
-                    type: object
-                    $ref: "#/definitions/Link"
-              linked:
-                type: object
-                properties:
-                  job_titles:
-                    type: array
-                    items:
-                      $ref: "#/definitions/Job Title"
-      tags:
-        - Job Tier
+                  $ref: "#/definitions/Folder"
+    delete:
+      summary: Delete Folder
+      description: You must pass in the folder id to delete a specific folder.
+      parameters:
+        - name: id
+          in: path
+          description: The folder's id.
+          required: true
+          type: string
+      responses:
+        200:
+          description: "Successful Response"
   /groups:
     get:
       summary: Groups Index
@@ -1447,46 +778,309 @@ paths:
                       $ref: "#/definitions/Group Type"
       tags:
         - Groups
-  # /file:
-  #   post:
-  #     summary: Create File
-  #     description: |
-  #       In order to set a file attribute in another API endpoint (such as a profile file or image field, or adding a file to an event), it is first necessary to upload the file in a separate request.
-  #       The format for this post request is different from other endpoints of the API. While other endpoints require a json formatted post request, uploading a file should be in a multipart/form-data format.
-  #       Once you have successfully completed this upload, the response will give you the id of the newly uploaded file, to set for profile attributes or events.
-  #       As a security feature the download links to files will expire after 10 minutes. Every file download link will include a one-time token.
-  #       In the case of an image file, the response will show available thumbs, as shown above.
-  #     parameters:
-  #       - name: file
-  #         in: query
-  #         description: File Object
-  #         required: true
-  #         type: string
-  #     responses:
-  #       200:
-  #         description: "Successful Response"
-  #         schema:
-  #           type: array
-  #           items:
-  #             $ref: "#/definitions/File"
-  #   get:
-  #     summary: Download File
-  #     description: Obtain the "file_url" from GET show resource endpoint and pass as parameter.
-  #     parameters:
-  #       - name: file
-  #         in: query
-  #         description: id given by file_url in 'Show Resource GET Endpoint'.
-  #         required: true
-  #         type: string
-  #     responses:
-  #       200:
-  #         description: "Successful Response"
-  #         schema:
-  #           type: array
-  #           items:
-  #             $ref: "#/definitions/File"
-  #     tags:
-  #       - File
+  /job_tiers:
+    get:
+      summary: Job Tiers Index
+      description: This method returns an array of all job tiers, whose format and content will be the same as the show profile endpoint.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              job_tiers:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Tier"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_tiers.job_titles:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title Link"
+      tags:
+        - Job Tier
+    post:
+      summary: Create Job Tier
+      description: Create a job tier. It's only parameter is title, which is required.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Endpoint to create a job tier.
+          schema:
+            $ref: "#/definitions/Create Job Tier"
+      responses:
+        201:
+          description: "Create Response"
+          schema:
+            type: object
+            properties:
+              job_tiers:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Tier"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_tiers.job_titles:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+      tags:
+        - Job Tier
+  /job_tiers/{id}:
+    get:
+      summary: Show Job Tier
+      description: The linked objects will contain information on all of the job titles assosciated with the job tier. For more information on how "links" and "linked" work, please consult the JSON API section of the documentation.
+      parameters:
+        - name: id
+          in: path
+          description: id of the Job Tier.
+          required: true
+          type: string
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              job_tiers:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Tier"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_tiers.job_titles:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+      tags:
+        - Job Tier
+    put:
+      summary: Update Job Tier
+      description: Updates a Job Tier.
+      parameters:
+        - name: id
+          in: path
+          description: id of the Job Tier to update.
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          description: Endpoint to update a job tier.
+          schema:
+            $ref: "#/definitions/Update Job Tier"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              job_tiers:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Tier"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_tiers.job_titles:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+      tags:
+        - Job Tier
+  /job_titles:
+    get:
+      summary: Job Titles Index
+      description: This endpoint returns all job titles, in the same format as in the show endpoint. Each job title has one linked job tier, and each job tier can have many job titles.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              job_titles:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Title"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_titles.job_tier:
+                    type: object
+                    items:
+                      $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_tiers:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Tier"
+      tags:
+        - Job Title
+    post:
+      summary: Create Job Title
+      description: To get a list of available job tiers, use the job tiers index endpoint.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Endpoint to create a job title.
+          schema:
+            $ref: "#/definitions/Create Job Title"
+      responses:
+        201:
+          description: "Create Response"
+          schema:
+            type: object
+            properties:
+              job_titles:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Title"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_titles.job_tier:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_tiers:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Tier"
+      tags:
+        - Job Title
+  /job_titles/{id}:
+    get:
+      summary: Show Job Title
+      description: This endpoint returns information about one job title. Each job title has one job tier, which is included in the "linked" section. For more information about how "links" and "linked" work, please consult the JSON API section of the documentation.
+      parameters:
+        - name: id
+          in: path
+          description: id of Job Title.
+          required: true
+          type: string
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              job_titles:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Title"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_titles.job_tier:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_tiers:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Tier"
+      tags:
+        - Job Title
+    put:
+      summary: Update Job Title
+      description: Allows you to modify an existing job title. To get a list of available job tiers, use the job tiers index endpoint.
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the job title you wish to change.
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: JSON payload to update a job title.
+          required: true
+          schema:
+            $ref: "#/definitions/Update Job Title"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              job_titles:
+                type: array
+                items:
+                  $ref: "#/definitions/Job Title"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  job_titles.job_tier:
+                    type: object
+                    $ref: "#/definitions/Link"
+              linked:
+                type: object
+                properties:
+                  job_tiers:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Tier"
+      tags:
+        - Job Title
   /likes/event/{event_id}/recent:
     get:
       summary: Likes Index
@@ -1546,6 +1140,571 @@ paths:
       responses:
         200:
           description: "Successful Response"
+  /pay_groups:
+    get:
+      summary: Pay Group Index
+      description: |
+        This method returns an array of `pay_groups`.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              pay_groups:
+                type: array
+                items:
+                  $ref: "#/definitions/Pay Group"
+              meta:
+                type: object
+                properties:
+                  payroll_companies:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Payroll Companies"
+              links:
+                type: object
+                properties:
+                  pay_groups.payroll_companies:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+              linked:
+                type: object
+                properties:
+                  payroll_companies:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Payroll Companies"
+  /profiles:
+    get:
+      summary: Profiles Index
+      description: |
+        This method returns an array of `profiles`, whose format and content will be the same as the show profile endpoint.
+        This endpoint uses pagination through two optional parameters. The first, limit, defaults to 30 and accepts an integer value to return records. The second, after, should be the id of the first record BEFORE the records that you want to retrieve.
+      parameters:
+        - name: per_page
+          in: query
+          description: Integer limit of records retrieved.
+          type: integer
+        - name: sort
+          in: query
+          description: An attribute to sort by fields on profiles. Allowed attributes are first_name, last_name, and job_title. Prepend with a - (minus) sign to reverse the order.
+          type: string
+        - name: filter
+          in: query
+          description: A hash containing a filter you'd like to apply before profiles are returned.
+          type: object
+        - name: page
+          in: query
+          description: The page of information you'd like to receive.
+          type: integer
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              profiles:
+                type: array
+                items:
+                  $ref: "#/definitions/Profile"
+              meta:
+                $ref: "#/definitions/Profile Meta"
+              links:
+                $ref: "#/definitions/Profile Links"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/definitions/File"
+                  groups:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Group"
+                  teams:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Team"
+      tags:
+        - Profiles
+    post:
+      summary: Create Profile
+      description: The fields that you can set and will receive are a combination of Namely's defaults fields and custom fields that exist only for your company.
+      parameters:
+      - name: body
+        in: body
+        required: true
+        description: JSON payload for the post request.
+        schema:
+          $ref: "#/definitions/Create Profile"
+      responses:
+        201:
+          description: "Created Response"
+          schema:
+            type: object
+            properties:
+              profiles:
+                type: array
+                items:
+                  $ref: "#/definitions/Profile"
+              meta:
+                $ref: "#/definitions/Profile Meta"
+              links:
+                $ref: "#/definitions/Profile Links"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/definitions/File"
+                  groups:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Group"
+                  teams:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Team"
+      tags:
+        - Profiles
+  /profiles/{id}:
+    get:
+      summary: Show Profiles
+      description: |
+        This method allows users to retrieve a `profile`.
+        The profile entry will contain additional information from all fields that your company has (default and custom) that are currently supported by the API and that the current user has access to for the given user. You can get a full list of accessible fields, as well as information on formatting them from the fields API endpoint.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of the profile you wish to retrieve.
+          type: string
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              profiles:
+                type: array
+                items:
+                  $ref: "#/definitions/Profile"
+              meta:
+                $ref: "#/definitions/Profile Meta"
+              links:
+                $ref: "#/definitions/Profile Links"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/definitions/File"
+                  groups:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Group"
+                  teams:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Team"
+      tags:
+        - Profiles
+    put:
+      summary: Update Profile
+      description: |
+        The update action is similar to the create action in what is modifiable and how it should be set. You need only pass the attributes that you would like to modify. Any others will remain as they are.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          description: JSON payload to update a profile.
+          schema:
+            $ref: "#/definitions/Update Profile"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              profiles:
+                type: array
+                items:
+                  $ref: "#/definitions/Profile"
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  status:
+                    type: integer
+              links:
+                type: object
+                items:
+                  $ref: "#/definitions/Profile Links"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/definitions/File"
+                  groups:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Group"
+                  teams:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Team"
+      tags:
+      - Profiles
+  /profiles/fields:
+    get:
+      summary: Profile Fields Index
+      description: |
+        Returns all currently supported Fields, default and custom.
+        NAME is the internal name of the field, which is also the key that should be used in the profile API endpoints. This may be distinct from LABEL, which is what will appear in the web interface.
+        The valid format info is an attempt to explain what the proper format and possible values are for that field.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              fields:
+                type: array
+                items:
+                  $ref: "#/definitions/Field"
+              meta:
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  fields.sections:
+                    type: string
+              linked:
+                type: object
+                properties:
+                  sections:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Section"
+      tags:
+        - Profile Fields
+    post:
+      summary: Create Profile Field
+      description: |
+        Allows you to create a profile field within a section.
+      parameters:
+      - name: body
+        in: body
+        required: true
+        description: JSON payload for the post request.
+        schema:
+          $ref: "#/definitions/Create Profile Field"
+      responses:
+        201:
+          description: "Created Response"
+          schema:
+            type: object
+            properties:
+              fields:
+                type: array
+                items:
+                  $ref: "#/definitions/Field"
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  fields.sections:
+                    type: string
+              linked:
+                type: object
+                properties:
+                  sections:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Section"
+      tags:
+        - Profile Fields
+  /profiles/fields/{id}:
+    put:
+      summary: Update Profile Field
+      description: |
+        Returns all currently supported Fields, default and custom.
+        NAME is the internal name of the field, which is also the key that should be used in the profile API endpoints. This may be distinct from LABEL, which is what will appear in the web interface.
+        The valid format info is an attempt to explain what the proper format and possible values are for that field.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id of the field name you wish to change.
+          type: string
+        - name: body
+          in: body
+          required: true
+          description: JSON payload for the post request.
+          schema:
+            $ref: "#/definitions/Update Profile Field"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              fields:
+                type: array
+                items:
+                  $ref: "#/definitions/Field"
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  status:
+                    type: integer
+              links:
+                type: object
+                properties:
+                  fields.sections:
+                    type: string
+              linked:
+                type: object
+                properties:
+                  sections:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Section"
+      tags:
+        - Profile Fields
+  /profiles/fields/sections:
+    get:
+      summary: Sections Index
+      description: |
+        Returns all currently supported Sections, default and custom.
+        NAME is the internal name of the field, which is also the key that should be used in the profile API endpoints. This may be distinct from LABEL, which is what will appear in the web interface.
+        The valid format info is an attempt to explain what the proper format and possible values are for that field.
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              sections:
+                type: array
+                items:
+                  $ref: '#/definitions/Section'
+              meta:
+                type: object
+                $ref: '#/definitions/Meta'
+              links:
+                type: object
+                properties:
+                  sections.fields:
+                      type: string
+              linked:
+                type: object
+                properties:
+                  fields:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Field"
+      tags:
+        - Profile Fields Sections
+    post:
+      summary: Create Section
+      description: |
+        Allows you to create a section that will include several profile fields. For example, a "General" section can include profile fields for "First Name", "Last Name", "Titles", etc.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: JSON payload for creating a new section.
+          schema:
+            $ref: "#/definitions/Create Section"
+      responses:
+        201:
+          description: "Created Response"
+          schema:
+            type: object
+            properties:
+              sections:
+                type: array
+                items:
+                  $ref: '#/definitions/Section'
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  sections.fields:
+                    type: string
+              linked:
+                type: object
+                properties:
+                  fields:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Field"
+      tags:
+        - Profile Fields Sections
+  /profiles/fields/sections/{id}:
+    get:
+      summary: Show Section
+      description: |
+        This method allows users to retrieve a section.
+        The results will contain additional information from all fields that your company has (default and custom) in that particular section that are currently supported by the API and that the current user has access to for the given user. You can get a full list of accessible fields, as well as information on formatting them from the fields API endpoint.
+      parameters:
+        - name: id
+          in: path
+          description: Section id
+          required: true
+          type: string
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              hello:
+                type: string
+              sections:
+                type: array
+                items:
+                  $ref: '#/definitions/Section'
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  sections.fields:
+                    type: string
+              linked:
+                type: object
+                properties:
+                  fields:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Field"
+      tags:
+        - Profile Fields Sections
+    put:
+      summary: Update Section
+      description: |
+        The update action is similar to the create action in what is modifiable and how it should be set. You need only pass the attribute (name of section) that you would like to modify. Any others will remain as they are.
+      parameters:
+        - name: id
+          in: path
+          description: Section id
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          description: JSON payload for updating a section.
+          schema:
+            $ref: "#/definitions/Update Section"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              hello:
+                type: string
+              sections:
+                type: array
+                items:
+                  $ref: '#/definitions/Section'
+              meta:
+                type: object
+                $ref: "#/definitions/Meta"
+              links:
+                type: object
+                properties:
+                  sections.fields:
+                    type: string
+              linked:
+                type: object
+                properties:
+                  fields:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Field"
+      tags:
+        - Profile Fields Sections
+  /profiles/me:
+    get:
+      summary: Current User
+      description: |
+        The response will contain information about the user who owns the access token used to access the API.
+        If the access token belongs to a full Profile, the response content and format will be Identical as if you did a show request for that profile.
+        However, if you are accessing via a dedicated API user, the response will be much shorter. The most important element in such a response would be EMAIL. FIRST_NAME and LAST_NAME will both be "Admin".
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: object
+            properties:
+              profiles:
+                type: array
+                items:
+                  $ref: "#/definitions/Profile"
+              meta:
+                $ref: "#/definitions/Profile Meta"
+              links:
+                $ref: "#/definitions/Profile Links"
+              linked:
+                type: object
+                properties:
+                  job_titles:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Job Title"
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/definitions/File"
+                  groups:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Group"
+                  teams:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Team"
+      tags:
+        - Profiles
   /reports/{id}:
     get:
       summary: Show Report
@@ -1572,77 +1731,6 @@ paths:
                 type: object
               linked:
                 type: object
-  /folder/{id}/resources:
-    get:
-      summary: Resources Index
-      description: This method returns an array of resources, whose format and content will be the same as the show resource endpoint.
-      parameters:
-        - name: id
-          in: path
-          description:  Use the folder id to pull the resources you want to see.
-          required: true
-          type: string
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              resources:
-                type: array
-                items:
-                  $ref: "#/definitions/Resource"
-              meta:
-                type: object
-                properties:
-                  is_super_admin:
-                    type: boolean
-                  accepted_file_extensions:
-                    type: string
-    post:
-      summary: Create Resource
-      description: To create a resource, you will need to either upload a file or provide a link.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the folder.
-          type: string
-        - name: body
-          in: body
-          required: true
-          description: JSON payload for creating a new resource.
-          schema:
-            $ref: "#/definitions/Create Resource"
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              resources:
-                type: array
-                items:
-                  $ref: "#/definitions/Resource"
-              meta:
-                type: object
-                properties:
-                  is_super_admin:
-                    type: boolean
-                  accepted_file_extensions:
-                    type: string
-    delete:
-      summary: Delete Resource
-      description: This endpoint deletes a specified resource.
-      parameters:
-        - name: id
-          in: path
-          description: The resource's id.
-          required: true
-          type: string
-      responses:
-        200:
-          description: "Successful Response"
   /resources/{id}:
     get:
       summary: Show Resource
@@ -1688,20 +1776,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/Resource"
-  /folders:
-    get:
-      summary: Show Folders
-      description: This endpoint returns a list of folders and their information.
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              resources:
-                type: array
-                items:
-                  $ref: "#/definitions/Folder"
     post:
       summary: Create Folder
       description: To create a folder, a title is required. An array of folders will be returned upon success, similar to folders index endpoint.
@@ -1722,80 +1796,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/Folder"
-  /folders/{id}:
-    put:
-      summary: Update Folder
-      description: You must know the id of the folder to update it.
-      parameters:
-        - name: id
-          in: path
-          description: The folder's id.
-          required: true
-          type: string
-        - name: body
-          in: body
-          required: true
-          description: JSON payload for updating an existing folder.
-          schema:
-            $ref: "#/definitions/Update Folder"
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              resources:
-                type: array
-                items:
-                  $ref: "#/definitions/Folder"
-    delete:
-      summary: Delete Folder
-      description: You must pass in the folder id to delete a specific folder.
-      parameters:
-        - name: id
-          in: path
-          description: The folder's id.
-          required: true
-          type: string
-      responses:
-        200:
-          description: "Successful Response"
-  /companies/info:
-    get:
-      summary: Company Info
-      description: Get company related information (authentication methods, name and background image).
-      responses:
-        200:
-          description: "Successful Response"
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Compay name
-              permalink:
-                type: string
-                description: Company permalink, the subdomain before namely.com
-              background_url:
-                type: string
-                description: Background image on the login page.
-              logo_url:
-                type: string
-                description: Logo image on the home page.
-              authentications:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      enum:
-                        - email_password
-                        - google_oauth2
-                        - saml
-                    init_url:
-                      type: string
-                      required: false
 definitions:
   Address:
     type: object
