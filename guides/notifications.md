@@ -14,11 +14,11 @@ The following events are currently supported:
 
   1.  [Creating a post](https://developers.namely.com/1.0/events/create-event-1)
       or comment with an @mention in the body.
-      An @mention is formatted using markdown link syntax --
+      An @mention is formatted using markdown link syntax:
 
-      * \[Profile Name](/profiles/<guid>)
-      * \[Team Name](/teams/<guid>)
-      * \[Group Name](/groups/<guid>)
+      * \[Profile Name](/profiles/\<guid>)
+      * \[Team Name](/teams/\<guid>)
+      * \[Group Name](/groups/\<guid>)
 
       For example, if a post is created with `"Hi [David](/profiles/123)"` as
       the content, then this will trigger a push notification via SNS to the user
@@ -31,12 +31,89 @@ The following events are currently supported:
   6.  Time off responded
 
 
+Push Notification Metadata
+--------------------------
+The metadata sent with the push notification depends on the type of notification:
+
+1.  @mention push notifications:
+
+    ```json
+    {
+      "notification_id": "integer",
+      "timestamp": "integer",
+      "profile_id": "string -- profile who @mentioned",
+      "event_id": "string -- event where recipient was @mentioned",
+      "comment_id": "string -- comment where recipient was @mentioned",
+      "team_ids": "[string] -- list of teams that were @mentioned"
+    }
+    ```
+2.  Time off created
+
+    ```json
+    {
+      "notification_id": "integer",
+      "timestamp":" integer",
+      "profile_id": "string -- profile whom time off request belongs to",
+      "time_off_request_id": "string",
+      "requester_id": "string -- profile who made request"
+    }
+    ```
+3.  Time off created on behalf
+
+    ```json
+    {
+      "notification_id": "integer",
+      "timestamp": "integer",
+      "profile_id": "string -- profile whom time off request belongs to",
+      "time_off_request_id": "string",
+      "requester_id": "string -- profile who made request"
+    }
+    ```
+4.  Time off destroy
+
+    ```json
+    {
+      "notification_id": "integer",
+      "timestamp": "integer",
+      "profile_id": "string -- profile whom time off request belongs to",
+      "time_off_request_id": "string",
+      "requester_id": "string -- profile who made request",
+      "responder_id": "string -- profile who approved/declined request"
+    }
+    ```
+5.  Time off edit
+
+    ```json
+    {
+      "notification_id": "integer",
+      "timestamp": "integer",
+      "profile_id": "string -- profile whom time off request belongs to",
+      "time_off_request_id": "string",
+      "requester_id": "string -- profile who made request",
+      "responder_id": "string -- profile who approved/declined request"
+    }
+    ```
+6.  Time off responded
+
+    ```json
+    {
+      "notification_id": "integer",
+      "timestamp": "integer",
+      "profile_id": "string -- profile whom time off request belongs to",
+      "time_off_request_id": "string",
+      "requester_id": "string -- profile who made request",
+      "responder_id": "string -- profile who approved/declined request"
+    }
+    ```
+
+
 JSON Format
 -----------
 All API requests must specify the `application/json` format.  
 This can be done by:  
 
 1.  Specifying it in the request header:
+
     ```http
     Accept: application/json
     Content-Type: application/json
@@ -54,7 +131,9 @@ occurs.
 
 1.  Create a device associated to the current user. Registers device with SNS to establish
     an endpoint.  
+
     __POST /api/v1/profiles/me/devices__:
+
     ```http
     POST /api/v1/profiles/me/devices HTTP/1.1
 
@@ -66,7 +145,9 @@ occurs.
     * `platform` (string) -- can be "ios" or, in the near future, "android"
     * `name` (string) -- description of device
 2.  Delete a device registered to a the current user.
+
     __DELETE /api/v1/profiles/me/devices/:token__:
+
     ```http
     DELETE /api/v1/profiles/me/devices/tokenstring HTTP/1.1
     ```
@@ -76,11 +157,15 @@ Notifications API
 -----------------
 1.  Retrieve current user's notifications. This currently returns all of a user's
     notifications, but eventually this will be limited to only 10.  
+
     __GET /api/v1/notifications__:
+
     ```http
     GET /api/v1/notifications HTTP/1.1
     ```
+
     __Response__:
+
     ```json
     {
       "notifications": [
@@ -124,27 +209,35 @@ Notifications API
     Query parameters:
     1.  `limit` (integer) -- number of notifications to retrieve at a time (will
         be a max of 10 going forward)
+
         ```http
         GET /api/v1/notifications?limit=10 HTTP/1.1
         ```
     2.  `skip` (integer) -- number of notifications to skip over
+
         ```http
         GET /api/v1/notifications?skip=10 HTTP/1.1
         ```
 2.  Mark all of the current user's notification as seen and sends a badge update
     via SNS with the number of unseen notifications (0 in this case).  
+
     __PATCH /api/v1/notifications/mark_all_seen__:
+
     ```http
     PATCH /api/v1/notifications/mark_all_seen HTTP/1.1
     ```
 3.  Marks all of the current user's notifications as read (includes marking as seen).
     Sends badge update via SNS with number of unseen notifications (0 in this case).  
+
     __PATCH /api/v1/notifications/mark_all_read__:
+
     ```http
     PATCH /api/v1/notifications/mark_all_read HTTP/1.1
     ```
 4.  Update an individual notification's read/seen value.  
+
     __PATCH/PUT /api/v1/notifications/:id__:
+
     ```http
     PATCH /api/v1/notifications/123 HTTP/1.1
 
@@ -164,12 +257,15 @@ User Push Notification Settings API
 -----------------------------------
 
 1.  Retrieve the current user's push notification settings.  
+
     __GET /api/v1/settings/account/push_notifications__:
+
     ```http
     GET /api/v1/settings/account/push_notifications HTTP/1.1
     ```
-    
+
     __Response__:
+
     ```json
     {
       "settings": [
@@ -225,7 +321,9 @@ User Push Notification Settings API
     }
     ```
 2.  Update the current user's push notification settings.  
+
     __PATCH/PUT /api/v1/settings/account/push_notifications/:id__:
+
     ```http
     PATCH /api/v1/settings/account/push_notifications/mention_user HTTP/1.1
 
